@@ -1,0 +1,17 @@
+<div class="main posts-show">
+  <div class="container">
+    <div class="posts-show-item">
+      <p>
+        <%= @user.name %>
+      </p>
+      <% if @timetime %>
+      <div class="post-time">
+        <p>ハイスコア</p>
+        <%= @timetime.timerecord %>
+      </div>
+      <% end %>
+      <div class="post-menus">
+      </div>
+    </div>
+  </div>
+</div>

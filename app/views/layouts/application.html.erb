@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>RailsApp</title>
+    <meta charset="utf-8">
+    <title>Quiz</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <header>
+     <div class="header-logo">
+       <%= link_to("ホーム", "/home/index") %>
+     </div>
+     <ul class="header-menus">
+
+       <% if @current_user %>
+       <li>
+         <%="ようこそ" +@current_user.name %>
+       </li>
+       <li>
+         <%= link_to("mine", "/users/#{@current_user.id}/show") %>
+       </li>
+         <li>
+           <%= link_to("ユーザー", "/users/index") %>
+         </li>
+         <li>
+           <%= link_to("ランキング", "/users/second") %>
+         </li>
+         <li>
+            <%= link_to("ログアウト", "/logout" , {method: :post}) %>
+          </li>
+         <% else %>
+         <li>
+           <%= link_to("ランキング", "/users/second") %>
+         </li>
+         <li>
+           <%= link_to("ログイン", "/login") %>
+         </li>
+
+         <% end %>
+     </ul>
+   </header>
+
+    <%= yield %>
+  </body>
+</html>

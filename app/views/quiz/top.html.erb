@@ -1,0 +1,173 @@
+<body>
+  <div class="container">
+    <p id="question"></p>
+    <div id="timer">
+      00:00.000
+    </div>
+    <div id="counter">
+      10/10
+    </div>
+    <ul id="choices">
+
+    </ul>
+    <div id="btn" class="disabled">
+      Next
+    </div>
+    <% if session[:user_id] %>
+      <%= form_tag ("/time") do %>
+      <section id="result">
+            <p></p>
+            <input id="target" name="record" value="">
+            <input class=result type="submit" value="タイムを登録する">
+
+        <a href="">Replay?</a>
+      </section>
+      <% end %>
+    <% else %>
+    <section id="result">
+          <p></p>
+      <a href="">Replay?</a>
+    </section>
+    <%end%>
+  </div>
+
+
+
+  <script>
+
+      const question = document.getElementById('question');
+      const choices = document.getElementById('choices');
+      const btn = document.getElementById('btn');
+      const result = document.getElementById('result');
+      const scoreLabel = document.querySelector('#result > p');
+      const timer = document.getElementById('timer');
+      const counter = document.getElementById('counter');
+      const target = document.getElementById("target");
+
+      const quizSet =[
+        {q: '東雲　この駅名の読み方は？', c: ['しののめ','とううん','ゆうだち']},
+        {q: '京成スカイライナーの最高速度は？', c: ['時速160km','時速150km','時速170km']},
+        {q: '蒸気機関車で貴婦人という愛称をもつ蒸気機関車は？', c: ['C57','D57','C52']},
+        {q: '西武10000系電車を製造したメーカーはどこ？', c: ['日立製作所','タカラトミー','日本製鐵']},
+        {q: '総質量95tの電車が同一加速度で速度20km/hから70km/hまで上昇するのに250m走った。走行抵抗は4500Nで線路の状況は6‰の下り勾配、半径800mの曲線区間とする。この時の引張力は？', c: ['71095N','5215N','30N']},
+        {q: '電車が架線から電気を取り入れるために屋根に設置されている装置は？',c:['パンタグラフ','ダイヤグラム','デンキトリイレー']},
+        {q: '弘明寺　この駅名の読み方は？',  c:['ぐみょうじ','こうめいじ','げんみょうじ']},
+        {q: '馬喰横山　この駅名の読み方は？',  c:['ばくろよこやま','ばしょくよこやま','ばくろこうざん']},
+        {q: 'JR東日本の正式名称は？',  c:['東日本旅客鉄道株式会社','株式会社東日本鉄道','Japan Railways東日本株式会社']},
+        {q: 'JR新宿駅の所属線は？',  c:['山手線','総武線','中央線']},
+        {q: 'JR山手線の切符の初乗り運賃は？',  c:['140円','136円','150円']},
+        {q: '京王電鉄の切符の初乗り運賃は？',  c:['130円','150円','120円']},
+        {q: '東京メトロの路線の数は？',  c:['9','8','13']},
+        {q: '東京メトロで東京と千葉を結ぶ路線は？',  c:['東西線','半蔵門線','千代田線']},
+        {q: '小田急の特急電車は？',  c:['ロマンスカー','スペーシア','スカイライナー']},
+        {q: '相鉄のマスコットキャラクターは？',  c:['そうにゃん','駅のみちか','テッペンペン']},
+        {q: '相模鉄道株式会社の略称は？',  c:['相鉄','模鉄','SJ']},
+        {q: '東武鉄道の総路線距離は？',  c:['463.3㎞','195.1km','179.8km']},
+        {q: '押上駅の副名称は？',  c:['スカイツリー前','スカイツリータウン','業平橋']},
+        {q: '京王電鉄のマスコットキャラクターは？',  c:['けい太くん','けいにゃん','パレオくん']},
+        {q: '京急のドレミファインバーターが搭載された「歌う電車」、発車時になる音階は？',  c:['ファソラシドレミファソ','ドレミファソラシド','レミファソラシレミファソ']},
+      ];
+
+      let currentNum = 0;
+      let isAnswered;
+      let score = 0;
+      let startTime = Date.now();
+      let timeoutId;
+      let random;
+      let time;
+
+
+      function countUp(){
+        const d = new Date(Date.now()-startTime);
+        const m = String(d.getMinutes()).padStart(2,'0') ;
+        const s = String(d.getSeconds()).padStart(2,'0') ;
+        const ms = String(d.getMilliseconds()).padStart(3,'0') ;
+        timer.textContent = `${m}:${s}.${ms}`;
+        time=`${m}:${s}.${ms}`;
+
+         timeoutId = setTimeout( ()=> {
+          countUp();
+        }, 10);
+      }
+
+       countUp();
+
+      btn.addEventListener('click',()=>{
+        if(btn.classList.contains('disabled')){
+          return;
+        }
+        btn.classList.add('disabled');
+
+
+        if (score === 10){
+          clearTimeout(timeoutId);
+          scoreLabel.textContent = time;
+          result.classList.add('show');
+          target.value = time;
+        }else{
+          currentNum++;
+          setQuiz();
+        }
+
+      });
+
+
+
+
+      function setQuiz(){
+        isAnswered = false;
+        random = Math.floor(Math.random()*quizSet.length)
+        const shuffleQuestion = quizSet[random];
+        question.textContent = shuffleQuestion.q;
+
+        while(choices.firstChild){
+          choices.removeChild(choices.firstChild)
+        }
+
+        const shuffledChoices = shuffle([...quizSet[random].c]);
+        shuffledChoices.forEach(choice =>{
+          const li = document.createElement('li');
+          li.textContent = choice;
+          li.addEventListener('click',()=>{
+            checkAnswer(li);
+          });
+          choices.appendChild(li);
+        });
+
+        if (score === 10){
+
+          btn.textContent = 'Show Score';
+        }
+        counter.textContent = `${score}/${10}`
+      }
+      setQuiz();
+
+      function checkAnswer(li){
+        if(isAnswered === true){
+          return;
+        }
+        isAnswered = true
+        if(li.textContent === quizSet[random].c[0]){
+          //console.log('correct');
+          li.classList.add('correct');
+          score++;
+        }else{
+          //console.log('wrong');
+          li.classList.add('wrong');
+        }
+        btn.classList.remove('disabled')
+      }
+
+      function shuffle(arr){
+        for (let i = arr.length-1; i > 0 ; i--){
+          const j = Math.floor(Math.random()*(i + 1));
+        [arr[j],arr[i]] = [arr[i],arr[j]];
+      }
+        return arr;
+      }
+
+
+
+  </script>
+</body>
+</html>

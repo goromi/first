@@ -1,0 +1,20 @@
+<div class="main users-index">
+  <div class="container">
+    <h1 class="users-heading">タイムランキング</h1>
+
+    <% index = 0 %>
+    <%@timetimes.each do |timetime| %>
+    <% user = User.find_by(id:timetime.user_id)%>
+      <div class="users-index-item">
+        <div class="user-right">
+
+          <%= index += 1 %>
+          <%= user.name %>
+
+            <%= timetime.timerecord %>
+
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

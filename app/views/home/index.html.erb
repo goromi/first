@@ -1,0 +1,34 @@
+<div class="about-main">
+  <h2>鉄道Quiz</h2>
+  <p>
+    鉄道のクイズです。
+    ランダムに出てくる問題を１０問正解してください。<br>
+    登録するとタイムが記録されます。
+  </p>
+
+  <img class="about-img" src="">
+</div>
+
+<% if not session[:user_id] %>
+
+<div class="form">
+  <%=form_tag("/create")do %>
+  <p>名前を入力してください</p>
+  <input name="name" value="">
+  <p>パスワードを入力してください</p>
+  <input type="password" name="password" value="">
+  <input type="submit" value="新規登録">
+  <% end %>
+</div>
+
+<% end %>
+
+
+ <div class="pic">
+   <a href="/quiz/top">
+    <div  id="time">
+      <h2 id="name">Quiz</h2>
+      <input type="button" id="start" value="Start">
+    </div >
+    </a>
+ </div>
