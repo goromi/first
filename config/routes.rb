@@ -14,6 +14,6 @@ Rails.application.routes.draw do
   get 'users/second' => 'users#second'
   get 'quiz/top' => "quiz#top"
 
-  get 'home/index' => 'home#index'
+  get 'home/show' => 'home#index'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
