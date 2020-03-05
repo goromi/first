@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  resources :home
+  root 'home#index'
+
   get 'login' => 'users#login_form'
 
   post 'time' =>  'users#time'
