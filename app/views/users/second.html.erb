@@ -3,7 +3,7 @@
     <h1 class="users-heading">タイムランキング</h1>
 
     <% index = 0 %>
-    <%@timetimes.each do |timetime| %>
+    <% @timetimes.each do |timetime| %>
     <% user = User.find_by(id:timetime.user_id)%>
       <div class="users-index-item">
         <div class="user-right">
